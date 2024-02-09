@@ -61,8 +61,8 @@
         "type": "function",
         "z": "84318a5143fdf947",
         "name": "",
-        "func": "msg.userData = msg.payload;\nmsg.url = msg.payload.website.trim();\n\nreturn msg;\n",
-        "outputs": 1,
+        "func": "msg.userData = msg.payload;\n\nif (msg.userData.website){\n    msg.url = msg.payload.website.trim();\n    return [msg,null]\n}else{\n    return [null, msg]\n}\n\n\n",
+        "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
@@ -77,6 +77,9 @@
         "wires": [
             [
                 "808693f37082f4f8"
+            ],
+            [
+                "baf4fee8d569cfa9"
             ]
         ]
     },
@@ -96,8 +99,8 @@
         "authType": "",
         "senderr": false,
         "headers": [],
-        "x": 430,
-        "y": 180,
+        "x": 550,
+        "y": 140,
         "wires": [
             [
                 "fdb93efc2907d2d2"
@@ -120,8 +123,8 @@
                 "module": "jsdom"
             }
         ],
-        "x": 580,
-        "y": 180,
+        "x": 700,
+        "y": 140,
         "wires": [
             [
                 "55d5db6359a0fa94"
@@ -156,8 +159,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 770,
-        "y": 180,
+        "x": 890,
+        "y": 140,
         "wires": [
             [
                 "abaccb29fd60f0c9"
@@ -181,8 +184,8 @@
             "value": "[]"
         },
         "OPENAI_API_KEY": "",
-        "x": 980,
-        "y": 180,
+        "x": 1100,
+        "y": 140,
         "wires": [
             [
                 "baf4fee8d569cfa9"
@@ -194,13 +197,13 @@
         "type": "function",
         "z": "84318a5143fdf947",
         "name": "response",
-        "func": "\n    \nconst audience = msg.payload.choices[0].message.content\nmsg.OPENAI_API_KEY = msg.userData.openAIKey;\nmsg.model = msg.userData.model;\n\nmsg.messages = [\n    {\n        role: \"system\",\n        content: \"act as a world-class LinkedIn content creator\",\n    },\n    {\n        role: \"user\", content: `You are a world-class LinkedIn content creator, known for your ability to craft posts that deeply resonate with your target audience. Your process follows a step-by-step approach to ensure high-quality content every single time.\nInitially, you will dissect the output LinkedIn post, understanding its key elements and how it delivers its message. \nThen, you will write 3 different variations of the same post. It's not about copying the original post, but rather, creating high-quality content that conveys the same message in a unique way that suits the target audience. \nAfterwards, you will dive into the crucial part.\n- To begin with, you will pinpoint the ways in which each variation can be altered to better resonate with the target audience (considering factors like tone, language, structure, and even the inclusion of new analogies or metaphors if it fits the audience's preferences). You need to have a clear reasoning for each change. List these as a semicolon-separated list.\n- Following that, based on your reasoning, you will modify each variation to include these changes.\n- Once you have revised the variations, you will critique each one, deciding if it's high-quality enough to meet your standards.\nYou need to determine the language of the original post and write other posts in the same language.\nOutput post: ${msg.userData.post}\nTarget audience: ${audience}`\n        }\n    ];\n\n    \n\n    return msg;\n\n",
+        "func": "let audience;\nif (msg.statusCode === 400) {\n    audience = 'linkedin users';\n} else {\n    audience = msg.payload.audience ? msg.payload.audience : msg.payload.choices[0].message.content;\n}\n\n\nmsg.OPENAI_API_KEY = msg.userData.openAIKey;\n// msg.model = msg.userData.model;\nmsg.model = \"gpt-3.5-turbo-16k\";\n\nmsg.messages = [\n    {\n        role: \"system\",\n        content: \"act as a world-class LinkedIn content creator\",\n    },\n    {\n        role: \"user\", content: `You are a world-class LinkedIn content creator, known for your ability to craft posts that deeply resonate with your target audience. Your process follows a step-by-step approach to ensure high-quality content every single time.\nInitially, you will dissect the output LinkedIn post, understanding its key elements and how it delivers its message. \nThen, you will write 3 different variations of the same post. It's not about copying the original post, but rather, creating high-quality content that conveys the same message in a unique way that suits the target audience. \nAfterwards, you will dive into the crucial part.\n- To begin with, you will pinpoint the ways in which each variation can be altered to better resonate with the target audience (considering factors like tone, language, structure, and even the inclusion of new analogies or metaphors if it fits the audience's preferences). You need to have a clear reasoning for each change. List these as a semicolon-separated list.\n- Following that, based on your reasoning, you will modify each variation to include these changes.\n- Once you have revised the variations, you will critique each one, deciding if it's high-quality enough to meet your standards.\nYou need to determine the language of the original post and write other posts in the same language.\nOutput post: ${msg.userData.post}\nTarget audience: ${audience}`\n        }\n    ];\n\n    \n\n    return msg;\n\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1140,
+        "x": 1280,
         "y": 180,
         "wires": [
             [
@@ -215,7 +218,7 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 1590,
+        "x": 1730,
         "y": 180,
         "wires": []
     },
@@ -230,7 +233,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1460,
+        "x": 1600,
         "y": 180,
         "wires": [
             [
@@ -255,7 +258,7 @@
             "value": "[]"
         },
         "OPENAI_API_KEY": "",
-        "x": 1300,
+        "x": 1440,
         "y": 180,
         "wires": [
             [
